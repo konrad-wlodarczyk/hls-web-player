@@ -70,7 +70,7 @@ body{
 }
 
 .progress-area .progress-bar{
-  width: 50%;
+  width: 0%;
   height: 100%;
   position: relative;
   background: red;
@@ -139,7 +139,7 @@ body{
   font-size: 14px;
   color: #efefef;
   margin-left: 15px;
-}
+} 
 
 .video-timer .separator{
   font-size: 16px;
@@ -147,8 +147,18 @@ body{
   font-size: "Open sans";
 }
 
+.video-timer {
+  transition: margin-left 0.08s ease;
+  margin-left: 0;
+  white-space: nowrap; 
+}
+
+.volume-container:hover ~ .video-timer {
+  margin-left: 100px; 
+}
+
 .play-pause-icon {
-  font-size: 40px;
+  font-size: 33px;
 }
 
 .playback-content{
@@ -222,4 +232,39 @@ body{
 
 .container video{
   width: 100%
+}
+
+.volume-container {
+  position: relative;
+  display: inline-block;
+}
+
+.volume-slider {
+  width: 80px; 
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.08s ease;
+  position: absolute;
+  left: 40px;
+  top: 17px;
+  pointer-events: none; 
+  z-index:10;
+}
+
+.volume-container:hover .volume-slider {
+  transform: scaleX(1);
+  pointer-events: auto; /* allow interaction when visible */
+}
+
+.volume-icon {
+  display: inline-block;
+  width: 22px; 
+  text-align: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.icon-fade {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }

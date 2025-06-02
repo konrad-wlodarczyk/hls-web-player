@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="https://fonts.google.com/icons?selected=Material+Symbols+Outlined:replay_10:FILL@0;wght@400;GRAD@0;opsz@24&icon.query=replay+10&icon.size=24&icon.color=%23e3e3e3" />
     <link rel="stylesheet" href="style.css">
-    <title>Custom video player</title>  
+    <title>HLS Web Player</title>  
 </head>
 <body>
     <div class="container">
@@ -23,8 +23,12 @@
             </div>
             <ul class="video-controls">
                 <li class="options left">
-                    <button class="volume"><span class="material-symbols-outlined">volume_up</span></button>
-                    <input type="range">
+                    <div class="volume-container">
+                        <button class="volume">
+                        <span class="material-symbols-outlined volume-icon">volume_up</span>
+                        </button>
+                        <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+                    </div>
                     <div class="video-timer">
                         <p class="current-time">00:00</p>
                         <p class="separator">/</p>
@@ -33,7 +37,7 @@
                 </li>
                 <li class="options center">
                     <button class="skip-backward"><span class="material-symbols-outlined">replay_10</span></button>
-                    <button class="play-pause"><span class="material-symbols-outlined play-pause-icon">play_pause</span></button>
+                    <button class="play-pause"><span class="material-icons play-pause-icon">play_arrow</span></button>
                     <button class="skip-forward"><span class="material-symbols-outlined">forward_10</span></button>
                 </li>
                 <li class="options right">
