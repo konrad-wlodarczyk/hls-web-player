@@ -199,6 +199,7 @@ volumeBtn.addEventListener("click", () => {
         }
     }
     volumeSlider.value = mainVideo.volume;
+    updateVolumeFill(); 
 });
 volumeSlider.addEventListener("input", e => {
     const volume = parseFloat(e.target.value);
