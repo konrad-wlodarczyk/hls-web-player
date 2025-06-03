@@ -13,7 +13,7 @@
     <title>HLS Web Player</title>  
 </head>
 <body>
-    <div class="container">
+    <div class="container show-controls">
         <div class="wrapper">
             <div class="video-timeline">
                 <div class="progress-area">
@@ -46,11 +46,11 @@
                         <span class="material-symbols-outlined">slow_motion_video</span>
                     </button>
                     <ul class="speed-options">
-                        <li>2x</li>
-                        <li>1.5x</li>
-                        <li class="active">Normal</li>
-                        <li>0.75x</li>
-                        <li>0.5x</li>
+                        <li data-speed="2">2x</li>
+                        <li data-speed="1.5">1.5x</li>
+                        <li data-speed="1" class="active">Normal</li>
+                        <li data-speed="0.75">0.75x</li>
+                        <li data-speed="0.5">0.5x</li>
                     </ul>
 
                     </div>
@@ -60,10 +60,10 @@
                             <span class="material-symbols-outlined">tune</span>
                         </button>
                         <ul class="quality-options">
-                        <li>1080p</li>
-                        <li class="active">720p</li>
-                        <li>480p</li>
-                        <li>360p</li>
+                        <li data-quality="1080">1080p</li>
+                        <li data-quality="720" class="active">720p</li>
+                        <li data-quality="480">480p</li>
+                        <li data-quality="360">360p</li>
                     </ul>
 
 
@@ -73,7 +73,7 @@
                         <span class="material-symbols-outlined">picture_in_picture_alt</span>
                     </button>
                     <button class="fullscreen">
-                        <span class="material-symbols-outlined">fullscreen</span>
+                        <span class="material-symbols-outlined fullscreen-icon">fullscreen</span>
                     </button>
                 </li>
 

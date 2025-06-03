@@ -6,12 +6,63 @@
   font-family: 'Poppins', sans-serif;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, white 0%, white 50%, grey 50%, grey 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  bottom: -1.5px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -4px; 
+  position: relative;
+  z-index: 2;
+}
+
+/* Firefox thumb */
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid #3b3b3b;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+input[type='range']::-moz-range-track {
+  background: transparent;
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: transparent;
+}
+}
+
 body{
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #3b3b3b;
+  background: #141414;
 }
 
 .body, .video-controls, .video-timer, .options{
@@ -35,8 +86,17 @@ body{
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -15px;
   z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.13s ease;
+}
+
+.container.show-controls .wrapper{
+  bottom: 0px;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .wrapper::before{
@@ -167,7 +227,7 @@ body{
 
 .playback-content .speed-options{
   position: absolute;
-  bottom: 40px;
+  bottom: 60px;
   left: -30px;
   width: 95px;
   opacity: 0;
@@ -179,7 +239,7 @@ body{
   transition: opacity 0.13s ease;
 }
 
-.playback-content button:hover ~ .speed-options{
+.playback-content .speed-options.show{
   opacity: 1;
   pointer-events: auto;
 
@@ -202,7 +262,7 @@ body{
 
 .quality-control .quality-options{
   position: absolute;
-  bottom: 40px;
+  bottom: 60px;
   left: -30px;
   width: 95px;
   opacity: 0;
@@ -214,7 +274,7 @@ body{
   transition: opacity 0.13s ease;
 }
 
-.quality-control button:hover ~ .quality-options{
+.quality-control .quality-options.show{
   opacity: 1;
   pointer-events: auto;
 }
