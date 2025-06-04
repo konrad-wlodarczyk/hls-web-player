@@ -13,6 +13,25 @@
     <title>HLS Web Player</title>  
 </head>
 <body>
+    <br>
+<div class="main-wrapper">
+    <div class="player-wrapper">
+        <img src="../Images/slayer.png" alt="Background" class="background-image" />
+             <div class="hls-controls">
+                <div class="hls-bar">
+                    <select id="playlist-select">
+                    <option disabled selected hidden>Select Stream</option>
+                    <option value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">Sample Playlist 1</option>
+                    <option value="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8">Sample Playlist 2</option>
+                    </select>
+
+                    <input type="text" id="playlist-url" placeholder="Paste Stream URL" />
+                    <button id="load-url">Play Stream</button>
+                </div>
+            </div>
+
+            <br>
+
     <div class="container show-controls">
         <div class="wrapper">
             <div class="video-timeline">
@@ -74,15 +93,39 @@
                     </button>
                     <button class="fullscreen">
                         <span class="material-symbols-outlined fullscreen-icon">fullscreen</span>
-                    </button>
+                    </button>   
                 </li>
 
             </ul>
+
         </div>
-        <video src="../Videos/videofile.mp4"></video>
+        <video></video>
     </div>
+            <div class="url-log-overlay" id="url-log">
+                        <h3>Stream Request Log</h3>
+                        <ul id="url-list">
+                            
+                        </ul>
+            </div> 
+            
+            <div class="video-info-overlay" id="video-info">
+                <h3>Stream Information</h3>
+                <p><span>Title:</span> <span id="video-title">-</span></p>
+                <p><span>Duration:</span> <span id="video-duration">00:00</span></p>
+                <p><span>File Size:</span> <span id="video-filesize">-</span></p>
+                <p>Bitrate: <span id="bitrate">-</span></p>
+                <p>Height: <span id="height">-</span></p>
+                <p>Width: <span id="width">-</span></p>
+                <p>Audio Codec: <span id="acodec">-</span></p>
+                <p>Video Codec: <span id="vcodec">-</span></p>
+            </div>
+
+                     
+</div>
+</div>
 
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
 </body>
 </html>

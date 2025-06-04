@@ -18,7 +18,164 @@ fullscreenBtn = container.querySelector(".fullscreen");
 const playPauseBtnIcon = document.querySelector(".play-pause-icon");
 const volumeBtnIcon = document.querySelector(".volume-icon");
 const fullscreenBtnIcon = document.querySelector(".fullscreen-icon");
+const video = mainVideo;
+const playlistSelect = document.getElementById('playlist-select');
+const playlistInput = document.getElementById('playlist-url');
+const loadBtn = document.getElementById('load-url');
+const bitrateEl = document.getElementById('bitrate');
+const widthEl = document.getElementById('width');
+const heightEl = document.getElementById('height');
+const vcodecEl = document.getElementById('vcodec');
+const acodecEl = document.getElementById('acodec');
+const titleEl = document.getElementById('video-title');
+const durationEl = document.getElementById('video-duration');
+const fileSizeEl = document.getElementById('video-filesize');
+
+
+let hls;
 let timer;
+
+function getFileNameFromURL(url) {
+  return url ? url.split('/').pop().split('?')[0] : '-';
+}
+
+function formatDuration(seconds) {
+  if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+async function fetchFileSize(url) {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    const size = response.headers.get('content-length');
+    if (size) {
+      return (size / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+  } catch (error) {
+    return 'Unavailable';
+  }
+  return '-';
+}
+
+function updateVideoInfo() {
+  widthEl.textContent = mainVideo.videoWidth || '-';
+  heightEl.textContent = mainVideo.videoHeight || '-';
+
+  if (hls && hls.levels && hls.currentLevel !== -1) {
+    const level = hls.levels[hls.currentLevel];
+    bitrateEl.textContent = level.bitrate ? (level.bitrate / 1000).toFixed(0) + ' kbps' : '-';
+    vcodecEl.textContent = level.videoCodec || '-';
+    acodecEl.textContent = level.audioCodec || '-';
+  } else {
+    bitrateEl.textContent = '-';
+    vcodecEl.textContent = '-';
+    acodecEl.textContent = '-';
+  }
+}
+
+function getClosestLevelIndexByBitrate(targetBitrate) {
+  if (!hls || !hls.levels) return -1;
+
+  let closestIndex = -1;
+  let closestDiff = Infinity;
+
+  hls.levels.forEach((level, i) => {
+    const diff = Math.abs(level.bitrate - targetBitrate);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestIndex = i;
+    }
+  });
+
+  return closestIndex;
+}
+
+
+playlistSelect.addEventListener('change', () => {
+  playlistInput.value = playlistSelect.value;
+});
+
+function loadHLSStream(src) {
+    if (hls) {
+        hls.destroy();
+        hls = null;
+    }
+
+    if (Hls.isSupported()) {
+        hls = new Hls();
+
+        hls.loadSource(src);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+            titleEl.textContent = getFileNameFromURL(src);
+            fileSizeEl.textContent = await fetchFileSize(src);
+
+            video.addEventListener("loadedmetadata", () => {
+                durationEl.textContent = formatDuration(video.duration);
+                updateVideoInfo();
+            }, { once: true });
+
+            const defaultLevel = Math.floor(hls.levels.length / 2);
+            hls.currentLevel = defaultLevel;
+
+            qualityOptions.innerHTML = "";
+            const sortedLevels = [...hls.levels].sort((a, b) => b.bitrate - a.bitrate);
+            sortedLevels.forEach((level) => {
+                const li = document.createElement("li");
+                const mbps = (level.bitrate / 1000000).toFixed(1);
+                li.textContent = `${mbps} Mbps`;
+                li.dataset.bitrate = level.bitrate;
+
+                const realIndex = hls.levels.findIndex(l => l.bitrate === level.bitrate);
+                if (realIndex === hls.currentLevel) li.classList.add("active");
+
+                li.addEventListener("click", () => {
+                    const newIndex = hls.levels.findIndex(l => l.bitrate === level.bitrate);
+                    if (newIndex !== -1) {
+                        hls.currentLevel = newIndex;
+                        qualityOptions.querySelector(".active")?.classList.remove("active");
+                        li.classList.add("active");
+                        qualityOptions.classList.remove("show");
+                    }
+                });
+
+                qualityOptions.appendChild(li);
+            });
+
+            hls.on(Hls.Events.LEVEL_SWITCHED, () => {
+                updateVideoInfo();
+            });
+        });
+
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = src;
+        video.addEventListener('loadedmetadata', async () => {
+            titleEl.textContent = getFileNameFromURL(src);
+            durationEl.textContent = formatDuration(video.duration);
+            fileSizeEl.textContent = await fetchFileSize(src);
+            updateVideoInfo();
+            video.play();
+        });
+    } else {
+        alert('HLS not supported in this browser');
+    }
+}
+
+
+loadBtn.addEventListener('click', () => {
+  let src = playlistInput.value.trim();
+  if (!src) {
+    src = playlistSelect.value;
+  }
+  if (!src) {
+    alert('Please select or enter a stream URL');
+    return;
+  }
+  loadHLSStream(src);
+});
 
 function updateVolumeFill() {
   const value = volumeSlider.value;
