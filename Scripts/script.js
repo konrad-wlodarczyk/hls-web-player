@@ -30,6 +30,7 @@ const acodecEl = document.getElementById('acodec');
 const titleEl = document.getElementById('video-title');
 const durationEl = document.getElementById('video-duration');
 const fileSizeEl = document.getElementById('video-filesize');
+const urlListEl = document.getElementById('url-list')
 
 
 let hls;
@@ -105,6 +106,48 @@ function loadHLSStream(src) {
 
     if (Hls.isSupported()) {
         hls = new Hls();
+
+        urlListEl.innerHTML = "";
+        let lastLevel = -1;
+        const MAX_LOG_ENTRIES = 100;
+
+        hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+            const url = data.frag.url;
+            const timestamp = new Date().toLocaleTimeString();
+            const level = data.frag.level;
+            const duration = data.frag.duration.toFixed(2);
+            const bitrate = hls.levels?.[level]?.bitrate || 0;
+
+            const li = document.createElement("li");
+            li.textContent = `[${timestamp}] L${level} | ${duration}s | ${url}`;
+
+
+            if (bitrate > 3000000) {
+                li.style.color = "#00ff00"; 
+            } else if (bitrate > 1000000) {
+                li.style.color = "#ffaa00"; 
+            } else {
+                li.style.color = "#ff5555"; 
+            }
+
+            urlListEl.prepend(li);
+            if (urlListEl.children.length > MAX_LOG_ENTRIES) {
+                urlListEl.removeChild(urlListEl.lastChild);
+            }
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+        const newLevel = data.level;
+        if (newLevel !== lastLevel) {
+            const notice = document.createElement("li");
+            const bitrate = hls.levels?.[newLevel]?.bitrate || 0;
+            notice.textContent = `--- Switched to level ${newLevel} (${(bitrate / 1000).toFixed(0)} kbps) ---`;
+            notice.style.fontStyle = "italic";
+            notice.style.color = "#00bcd4";
+            urlLogEl.prepend(notice);
+            lastLevel = newLevel;
+        }
+        });
 
         hls.loadSource(src);
         hls.attachMedia(video);
