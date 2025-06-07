@@ -73,13 +73,13 @@ body{
 
 .container {
   max-width: 1200px;
-  max-height: 675px;
-  width: 98%;
+  width: 98vw;
+  height: auto;
+  aspect-ratio: 16/9;
   position: relative;
   background: #000;
   border-radius: 5px;
-  overflow: hidden;
-  height: 675px;  
+  overflow: hidden; 
   margin-left: 400px;
 }
 
@@ -350,9 +350,10 @@ body{
 .hls-bar {
   display: flex;
   width: 100%;
-  max-width: 800px;
+  max-width: 1300px;
   border-radius: 4px;
   overflow: hidden;
+  margin-left: 380px;
 }
   
 .hls-bar select,
@@ -369,8 +370,7 @@ body{
   background-color: #8b0000;
   color: white;
   min-width: 160px;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 .hls-bar input {
@@ -390,6 +390,14 @@ body{
 
 .hls-bar button:hover {
   background-color: #bc544b;
+}
+
+.hls-bar select:hover {
+  background-color: #bc544b;
+}
+
+.hls-bar > *:not(:first-child) {
+  box-shadow: inset 1px 0 0 0 #2a2a2a; 
 }
 
 .video-info-overlay {

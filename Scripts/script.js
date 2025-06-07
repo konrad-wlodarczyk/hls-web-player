@@ -31,6 +31,7 @@ const titleEl = document.getElementById('video-title');
 const durationEl = document.getElementById('video-duration');
 const fileSizeEl = document.getElementById('video-filesize');
 const urlListEl = document.getElementById('url-list')
+const localPlaylistSelect = document.getElementById('local-playlist-select');
 
 
 let hls;
@@ -46,6 +47,10 @@ function formatDuration(seconds) {
   const secs = Math.floor(seconds % 60);
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
+
+localPlaylistSelect.addEventListener('change', () =>{
+    playlistInput.value = localPlaylistSelect.value;
+});
 
 async function fetchFileSize(url) {
   try {
@@ -121,7 +126,6 @@ function loadHLSStream(src) {
             const li = document.createElement("li");
             li.textContent = `[${timestamp}] L${level} | ${duration}s | ${url}`;
 
-
             if (bitrate > 3000000) {
                 li.style.color = "#00ff00"; 
             } else if (bitrate > 1000000) {
@@ -137,16 +141,16 @@ function loadHLSStream(src) {
         });
 
         hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-        const newLevel = data.level;
-        if (newLevel !== lastLevel) {
-            const notice = document.createElement("li");
-            const bitrate = hls.levels?.[newLevel]?.bitrate || 0;
-            notice.textContent = `--- Switched to level ${newLevel} (${(bitrate / 1000).toFixed(0)} kbps) ---`;
-            notice.style.fontStyle = "italic";
-            notice.style.color = "#00bcd4";
-            urlLogEl.prepend(notice);
-            lastLevel = newLevel;
-        }
+            const newLevel = data.level;
+            if (newLevel !== lastLevel) {
+                const notice = document.createElement("li");
+                const bitrate = hls.levels?.[newLevel]?.bitrate || 0;
+                notice.textContent = `--- Switched to level ${newLevel} (${(bitrate / 1000).toFixed(0)} kbps) ---`;
+                notice.style.fontStyle = "italic";
+                notice.style.color = "#00bcd4";
+                urlListEl.prepend(notice);
+                lastLevel = newLevel;
+            }
         });
 
         hls.loadSource(src);
@@ -155,6 +159,10 @@ function loadHLSStream(src) {
         hls.on(Hls.Events.MANIFEST_PARSED, async () => {
             titleEl.textContent = getFileNameFromURL(src);
             fileSizeEl.textContent = await fetchFileSize(src);
+
+            if (hls.audioTracks && hls.audioTracks.length > 0) {
+                hls.audioTrack = 0;
+            }
 
             video.addEventListener("loadedmetadata", () => {
                 durationEl.textContent = formatDuration(video.duration);
@@ -207,17 +215,28 @@ function loadHLSStream(src) {
     }
 }
 
-
 loadBtn.addEventListener('click', () => {
-  let src = playlistInput.value.trim();
-  if (!src) {
-    src = playlistSelect.value;
+  const inputUrl = playlistInput.value.trim();
+  const localPlaylistUrl = localPlaylistSelect.value;
+  const remotePlaylistUrl = playlistSelect.value;
+
+  let src = '';
+
+  if (inputUrl) {
+    src = inputUrl;
+  } else if (localPlaylistUrl) {
+    src = localPlaylistUrl;
+  } else if (remotePlaylistUrl) {
+    src = remotePlaylistUrl;
   }
+
   if (!src) {
     alert('Please select or enter a stream URL');
     return;
   }
+
   loadHLSStream(src);
+  mainVideo.play();
 });
 
 function updateVolumeFill() {
