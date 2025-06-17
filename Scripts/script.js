@@ -452,3 +452,24 @@ mainVideo.addEventListener("play", () => {
 mainVideo.addEventListener("pause", () => {
   playPauseBtnIcon.textContent = "play_arrow";
 });
+
+function scalePage() {
+  const baseWidth = 1920;
+  const baseHeight = 1080;
+  const scaleX = window.innerWidth / baseWidth;
+  const scaleY = window.innerHeight / baseHeight;
+  const scale = Math.min(scaleX, scaleY) * 1.2;
+  
+
+  const wrapper = document.querySelector('.scale-wrapper');
+  if (wrapper) {
+    wrapper.style.transform = `scale(${scale})`;
+    wrapper.style.width = '100vw';
+    wrapper.style.height = '100vh';
+    wrapper.style.overflowY = 'auto';
+  }
+}
+
+scalePage();
+
+window.addEventListener('resize', scalePage);

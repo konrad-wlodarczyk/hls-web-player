@@ -80,7 +80,7 @@ body{
   background: #000;
   border-radius: 5px;
   overflow: hidden; 
-  margin-left: 400px;
+  margin-left: 600px;
 }
 
 .container video {
@@ -322,7 +322,7 @@ body{
 
 .volume-container:hover .volume-slider {
   transform: scaleX(1);
-  pointer-events: auto; /* allow interaction when visible */
+  pointer-events: auto; 
 }
 
 .volume-icon {
@@ -350,10 +350,10 @@ body{
 .hls-bar {
   display: flex;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1200px;
   border-radius: 4px;
   overflow: hidden;
-  margin-left: 380px;
+  margin-left: 480px;
 }
   
 .hls-bar select,
@@ -465,7 +465,7 @@ body{
   overflow-y: auto;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   font-family: Arial, sans-serif;
-  margin-left: 400px;
+  margin-left: 600px;
 }
 
 .url-log-overlay h3 {
@@ -506,4 +506,41 @@ body{
   width: 100%;
   height: auto;
   display: block;
+}
+
+.scale-wrapper {
+  width: 100wh;
+  height: 100vh;
+  transform-origin: top left;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+
+.scale-wrapper:hover {
+  overflow-y: auto;
+}
+
+
+.scale-wrapper::-webkit-scrollbar {
+  display: none; 
+}
+
+@media (max-width: 1280px) {
+  .scale-wrapper {
+    transform: scale(0.75);
+    width: 100wh;
+    height: calc(100vh / 0.75); 
+  } 
+}
+
+@media (max-width: 960px) {
+  .scale-wrapper {
+    transform: scale(0.5);
+    height: calc(100vh / 0.5); 
+  }
 }
